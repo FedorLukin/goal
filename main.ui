@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>700</width>
+    <height>500</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Music Player</string>
+  </property>
+
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QHBoxLayout" name="mainLayout">
+    <property name="spacing">
+     <number>12</number>
+    </property>
+    <property name="leftMargin">
+     <number>12</number>
+    </property>
+    <property name="topMargin">
+     <number>12</number>
+    </property>
+    <property name="rightMargin">
+     <number>12</number>
+    </property>
+    <property name="bottomMargin">
+     <number>12</number>
+    </property>
+
+    <item>
+     <layout class="QVBoxLayout" name="playlistLayout">
+      <item>
+       <widget class="QLabel" name="playlistLabel">
+        <property name="text">
+         <string>Плейлисты</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+       </widget>
+      </item>
+
+      <item>
+       <widget class="QListWidget" name="playlistWidget">
+        <property name="minimumSize">
+         <size>
+          <width>250</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+
+      <item>
+       <widget class="QPushButton" name="createPlaylistButton">
+        <property name="text">
+         <string>Создать плейлист</string>
+        </property>
+       </widget>
+      </item>
+
+      <item>
+       <widget class="QPushButton" name="deletePlaylistButton">
+        <property name="text">
+         <string>Удалить плейлист</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+
+    <item>
+     <layout class="QVBoxLayout" name="trackLayout">
+      <item>
+       <widget class="QLabel" name="trackLabel">
+        <property name="text">
+         <string>Композиции</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+       </widget>
+      </item>
+
+      <item>
+       <widget class="QListWidget" name="trackWidget"/>
+      </item>
+
+      <item>
+       <layout class="QHBoxLayout" name="trackButtonsLayout">
+        <item>
+         <widget class="QPushButton" name="addTrackButton">
+          <property name="text">
+           <string>Добавить композицию</string>
+          </property>
+         </widget>
+        </item>
+
+        <item>
+         <widget class="QPushButton" name="removeTrackButton">
+          <property name="text">
+           <string>Удалить композицию</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+      <item>
+       <layout class="QHBoxLayout" name="playerButtonsLayout">
+        <item>
+         <widget class="QPushButton" name="previousButton">
+          <property name="text">
+           <string>Предыдущая</string>
+          </property>
+         </widget>
+        </item>
+
+        <item>
+         <widget class="QPushButton" name="playButton">
+          <property name="text">
+           <string>Воспроизвести</string>
+          </property>
+         </widget>
+        </item>
+
+        <item>
+         <widget class="QPushButton" name="nextButton">
+          <property name="text">
+           <string>Следующая</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+
+   </layout>
+  </widget>
+
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+
+ <resources/>
+ <connections/>
+</ui>
