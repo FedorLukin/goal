@@ -278,7 +278,7 @@ class PlayerWindow(QMainWindow):
     def media_status_changed(self, status):
         """Запустить следующий трек после окончания текущего."""
 
-        if (status != QMediaPlayer.MediaStatus.EndOfMedia):
+        if status != QMediaPlayer.MediaStatus.EndOfMedia:
             return
 
         self.next_track()
