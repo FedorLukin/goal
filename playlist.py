@@ -71,3 +71,7 @@ class PlayList(LinkedList):
     def current_item(self):
         """Текущий элемент плейлиста."""
         return self._current
+
+    @current_item.setter
+    def current_item(self, new_item):
+        self._current = new_item

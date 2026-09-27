@@ -1,16 +1,18 @@
 """Модуль плеера."""
 
-
 from mutagen import File
+
+
 from PyQt6 import uic
-from PyQt6.QtCore import QUrl
+from PyQt6.QtCore import QUrl, Qt
 from PyQt6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PyQt6.QtWidgets import (
+    QAbstractItemView,
     QFileDialog,
     QInputDialog,
     QListWidgetItem,
+    QLineEdit,
     QMainWindow,
-    QLineEdit
 )
 
 from playlist import Composition, PlayList
@@ -47,9 +49,17 @@ class PlayerWindow(QMainWindow):
         self.previousButton.clicked.connect(self.previous_track)
         self.nextButton.clicked.connect(self.next_track)
         self.playlistWidget.currentRowChanged.connect(self.select_playlist)
+        self.trackWidget.setDragEnabled(True)
+        self.trackWidget.setAcceptDrops(True)
+        self.trackWidget.setDropIndicatorShown(True)
+        self.trackWidget.setDragDropMode(
+            QAbstractItemView.DragDropMode.InternalMove
+            )
+        self.trackWidget.itemClicked.connect(self.select_track)
+        self.trackWidget.model().rowsMoved.connect(self.change_order)
 
     def create_playlist(self):
-        """Создать новый плейлист."""
+        """Создать новый плейлист.""" 
 
         name, ok = QInputDialog.getText(
             self,
@@ -179,12 +189,14 @@ class PlayerWindow(QMainWindow):
         self.refresh_tracks()
 
     def toggle_play_pause(self):
+
         """Запустить или поставить на паузу текущую композицию."""
 
         if self.current_playlist is None:
             return
 
-        if self.current_playlist.current is None:
+        if self.current_playlist.current_item is None:
+            self.trackWidget.setCurrentRow(0)
             self.play_selected()
             return
 
@@ -193,7 +205,11 @@ class PlayerWindow(QMainWindow):
         ):
             self.player.pause()
             self.playButton.setText("Воспроизвести")
-
+        elif self.player.playbackState() == (
+            QMediaPlayer.PlaybackState.StoppedState
+        ):
+            print('zzz')
+            self.play_selected()
         else:
             self.player.play()
             self.playButton.setText("Пауза")
@@ -206,11 +222,7 @@ class PlayerWindow(QMainWindow):
 
         row = self.trackWidget.currentRow()
 
-        if row < 0:
-            return
-
         item = self.current_playlist[row]
-
         self.play_item(item)
 
     def play_item(self, item):
@@ -284,18 +296,15 @@ class PlayerWindow(QMainWindow):
         self.next_track()
 
     def refresh_tracks(self):
-        """Обновить список композиций."""
-
+        """Обновить виджет треков."""
         self.trackWidget.clear()
 
         if self.current_playlist is None:
             return
 
         for item in self.current_playlist:
-            composition = item.data
-
-            list_item = QListWidgetItem(composition.display_name)
-
+            list_item = QListWidgetItem(item.data.display_name)
+            list_item.setData(Qt.ItemDataRole.UserRole, item)
             self.trackWidget.addItem(list_item)
 
     def update_current_track(self):
@@ -315,3 +324,32 @@ class PlayerWindow(QMainWindow):
             if item is current:
                 self.trackWidget.setCurrentRow(index)
                 break
+
+    def change_order(self, *_):
+        """Изменить порядок композиций."""
+        items = [
+            self.trackWidget.item(i).data(Qt.ItemDataRole.UserRole)
+            for i in range(self.trackWidget.count())
+        ]
+
+        self.current_playlist.first_item = items[0]
+
+        for i, item in enumerate(items):
+            item._previous = items[i - 1]
+            item._next = items[(i + 1) % len(items)]
+
+        self.refresh_tracks()
+
+    def select_track(self, item):
+        """Выбрать композицию мышью."""
+        composition = self.current_playlist[self.trackWidget.row(item)]
+
+        if self.player.playbackState() == (
+            QMediaPlayer.PlaybackState.PlayingState
+        ):
+            self.play_selected()
+        else:
+            self.player.stop()
+            self.current_playlist.current_item = composition
+
+        self.update_current_track()
